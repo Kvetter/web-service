@@ -1,28 +1,22 @@
 package dk.profac.demo.model;
 
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "profac_users")
-public class ProfacUser {
+public class User {
 
     @Id
     private long id;
 
     private String username;
-    private String password; // password skal minimum være x karaktere langt
-    private String firstName;
-    //private String lastName; // Fjern og lav som opgave
-    //private String email; // lav som opgave
+    private String password;
 
-    public ProfacUser() {}
+    public User() {}
 
-    public ProfacUser(String username, String password, String firstName) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
     }
 
     @Id
@@ -50,13 +44,14 @@ public class ProfacUser {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
-
 }
 

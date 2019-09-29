@@ -1,11 +1,14 @@
 package dk.profac.demo.controller;
 
-import dk.profac.demo.model.ProfacUser;
+import dk.profac.demo.model.User;
 import dk.profac.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+
 
 @RestController
 @RequestMapping("/api")
@@ -16,19 +19,28 @@ public class UserController {
 
     @Transactional
     @GetMapping("/login")
-    public ProfacUser login(@RequestParam String username, @RequestParam String password) {
-        ProfacUser profacUser = userRepository.getByUsername(username);
-
-        /*
-        If we have a user (user!=null) we know the username exists in our database, we then need to validate the password
-        with our user object
-         */
-        return profacUser;
+    public ResponseEntity login(@RequestParam String username, @RequestParam String password) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            return new ResponseEntity("User not found", HttpStatus.FORBIDDEN);
+        } else {
+            return new ResponseEntity(user, HttpStatus.OK);
+        }
     }
 
+    @Transactional
     @PostMapping("/user")
-    public ProfacUser createUser(@RequestParam String username, @RequestParam String password) {
-        return userRepository.createUser(username, password);
+    public ResponseEntity createUser(@RequestParam String username, @RequestParam String password) {
+        User u = new User(username, password);
+        User user = userRepository.save(u);
+        return  new ResponseEntity(user, HttpStatus.OK);
+    }
+
+    @Transactional
+    @DeleteMapping("/user")
+    public ResponseEntity deleteUser(@RequestParam String username) {
+        int delete = userRepository.deleteByUsername(username);
+        return new ResponseEntity(delete, HttpStatus.OK);
     }
 
 
